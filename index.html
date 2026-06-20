@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Generator — Free & Instant</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f13; --surface: #1a1a24; --border: #2a2a38;
+      --accent: #7c6af7; --accent-hover: #9180ff; --text: #e8e8f0;
+      --muted: #888899; --success: #4caf87; --radius: 16px;
+    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 16px; }
+    header { text-align: center; margin-bottom: 48px; }
+    header .badge { display: inline-block; background: rgba(124,106,247,0.15); color: var(--accent); border: 1px solid rgba(124,106,247,0.3); border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 14px; margin-bottom: 16px; }
+    h1 { font-size: clamp(28px,5vw,48px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 12px; }
+    h1 span { color: var(--accent); }
+    header p { color: var(--muted); font-size: 16px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; width: 100%; max-width: 560px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 8px; }
+    .input-row { display: flex; gap: 10px; }
+    input[type="url"] { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 15px; padding: 12px 16px; outline: none; transition: border-color 0.2s; }
+    input[type="url"]:focus { border-color: var(--accent); }
+    input[type="url"]::placeholder { color: var(--muted); }
+    button.generate-btn { background: var(--accent); border: none; border-radius: 10px; color: #fff; cursor: pointer; font-size: 15px; font-weight: 600; padding: 12px 22px; transition: background 0.2s, transform 0.1s; white-space: nowrap; }
+    button.generate-btn:hover { background: var(--accent-hover); }
+    button.generate-btn:active { transform: scale(0.97); }
+    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+    .option-group label { margin-bottom: 6px; }
+    select, input[type="color"] { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; padding: 9px 12px; outline: none; cursor: pointer; }
+    select:focus { border-color: var(--accent); }
+    .color-swatch { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; flex: 1; }
+    .color-swatch span { font-size: 13px; color: var(--muted); }
+    input[type="color"] { width: 28px; height: 28px; padding: 0; border: none; background: none; cursor: pointer; }
+    .output { margin-top: 32px; display: none; flex-direction: column; align-items: center; gap: 20px; }
+    .output.visible { display: flex; }
+    .qr-wrap { background: #fff; border-radius: 12px; padding: 16px; display: inline-block; box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 60px rgba(0,0,0,0.5); }
+    #qrcode canvas, #qrcode img { display: block; }
+    .qr-url { font-size: 13px; color: var(--muted); word-break: break-all; text-align: center; max-width: 300px; }
+    .action-row { display: flex; gap: 10px; }
+    .action-btn { display: flex; align-items: center; gap: 7px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); cursor: pointer; font-size: 14px; font-weight: 500; padding: 10px 18px; transition: border-color 0.2s, background 0.2s; }
+    .action-btn:hover { border-color: var(--accent); background: rgba(124,106,247,0.08); }
+    .action-btn svg { flex-shrink: 0; }
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--success); color: #fff; font-size: 14px; font-weight: 500; padding: 10px 20px; border-radius: 100px; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    footer { margin-top: 48px; color: var(--muted); font-size: 13px; text-align: center; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="badge">100% Free</div>
+  <h1>Generate a <span>QR Code</span><br>for any link</h1>
+  <p>Paste your URL, customize, and download — no sign-up required.</p>
+</header>
+<div class="card">
+  <label for="url-input">Your URL</label>
+  <div class="input-row">
+    <input type="url" id="url-input" placeholder="https://example.com" autocomplete="off" spellcheck="false" />
+    <button class="generate-btn" onclick="generate()">Generate</button>
+  </div>
+  <div class="options">
+    <div class="option-group">
+      <label>Size</label>
+      <select id="size-select">
+        <option value="128">128 x 128</option>
+        <option value="200">200 x 200</option>
+        <option value="256" selected>256 x 256</option>
+        <option value="400">400 x 400</option>
+        <option value="512">512 x 512</option>
+      </select>
+    </div>
+    <div class="option-group">
+      <label>Error Correction</label>
+      <select id="ec-select">
+        <option value="L">Low (L)</option>
+        <option value="M" selected>Medium (M)</option>
+        <option value="Q">High (Q)</option>
+        <option value="H">Highest (H)</option>
+      </select>
+    </div>
+    <div class="option-group">
+      <label>Foreground</label>
+      <div class="color-swatch">
+        <input type="color" id="fg-color" value="#000000" />
+        <span id="fg-label">#000000</span>
+      </div>
+    </div>
+    <div class="option-group">
+      <label>Background</label>
+      <div class="color-swatch">
+        <input type="color" id="bg-color" value="#ffffff" />
+        <span id="bg-label">#ffffff</span>
+      </div>
+    </div>
+  </div>
+  <div class="output" id="output">
+    <div class="qr-wrap"><div id="qrcode"></div></div>
+    <div class="qr-url" id="qr-url-label"></div>
+    <div class="action-row">
+      <button class="action-btn" onclick="downloadPNG()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PNG
+      </button>
+      <button class="action-btn" onclick="copySVG()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy Link
+      </button>
+    </div>
+  </div>
+</div>
+<footer>No data is stored. Everything runs in your browser.</footer>
+<div class="toast" id="toast"></div>
+<script>
+  const fgInput = document.getElementById('fg-color');
+  const bgInput = document.getElementById('bg-color');
+  fgInput.addEventListener('input', () => { document.getElementById('fg-label').textContent = fgInput.value; });
+  bgInput.addEventListener('input', () => { document.getElementById('bg-label').textContent = bgInput.value; });
+  document.getElementById('url-input').addEventListener('keydown', e => { if (e.key === 'Enter') generate(); });
+  let lastUrl = '';
+  function generate() {
+    const url = document.getElementById('url-input').value.trim();
+    if (!url) { showToast('Please enter a URL', '#e05c5c'); return; }
+    try { new URL(url); } catch { showToast('Please enter a valid URL (include https://)', '#e05c5c'); return; }
+    const size = parseInt(document.getElementById('size-select').value);
+    const ec = document.getElementById('ec-select').value;
+    const container = document.getElementById('qrcode');
+    container.innerHTML = '';
+    new QRCode(container, { text: url, width: size, height: size, colorDark: fgInput.value, colorLight: bgInput.value, correctLevel: QRCode.CorrectLevel[ec] });
+    lastUrl = url;
+    document.getElementById('qr-url-label').textContent = url;
+    const output = document.getElementById('output');
+    output.classList.add('visible');
+    output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function downloadPNG() {
+    const canvas = document.querySelector('#qrcode canvas');
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.download = 'qrcode.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('Downloaded!');
+  }
+  function copySVG() {
+    if (!lastUrl) return;
+    navigator.clipboard.writeText(lastUrl).then(() => showToast('Link copied to clipboard!'));
+  }
+  function showToast(msg, color = '#4caf87') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.background = color;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+</body>
+</html>
