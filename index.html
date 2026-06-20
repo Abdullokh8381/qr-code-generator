@@ -3,75 +3,117 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bepul QR Kod Generator</title>
+  <title>QRtez — QR Kod Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #f2f2f7; --glass: rgba(255,255,255,0.78); --glass-b: rgba(255,255,255,0.95);
+      --bg: #f2f2f7;
+      --glass: rgba(255,255,255,0.78);
+      --glass-b: rgba(255,255,255,0.95);
       --shadow: 0 2px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
       --shadow-lg: 0 8px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.05);
-      --text: #1d1d1f; --text2: #6e6e73; --text3: #aeaeb2;
-      --sep: rgba(0,0,0,0.08); --ibg: rgba(0,0,0,0.04);
-      --seg: rgba(0,0,0,0.06); --seg-a: #ffffff; --seg-shadow: 0 1px 4px rgba(0,0,0,0.12);
-      --accent: #000; --blur: blur(40px) saturate(180%);
+      --text: #1d1d1f;
+      --text2: #6e6e73;
+      --text3: #aeaeb2;
+      --sep: rgba(0,0,0,0.08);
+      --ibg: rgba(0,0,0,0.04);
+      --seg: rgba(0,0,0,0.06);
+      --seg-a: #ffffff;
+      --seg-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      --accent: #000;
+      --blur: blur(40px) saturate(180%);
     }
+
     [data-theme="dark"] {
-      --bg: #111114; --glass: rgba(28,28,38,0.82); --glass-b: rgba(255,255,255,0.08);
+      --bg: #111114;
+      --glass: rgba(28,28,38,0.82);
+      --glass-b: rgba(255,255,255,0.08);
       --shadow: 0 2px 24px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.2);
       --shadow-lg: 0 8px 40px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
-      --text: #f2f2f7; --text2: #98989f; --text3: #636366;
-      --sep: rgba(255,255,255,0.08); --ibg: rgba(255,255,255,0.06);
-      --seg: rgba(255,255,255,0.08); --seg-a: rgba(255,255,255,0.15); --seg-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      --text: #f2f2f7;
+      --text2: #98989f;
+      --text3: #636366;
+      --sep: rgba(255,255,255,0.08);
+      --ibg: rgba(255,255,255,0.06);
+      --seg: rgba(255,255,255,0.08);
+      --seg-a: rgba(255,255,255,0.15);
+      --seg-shadow: 0 1px 4px rgba(0,0,0,0.4);
       --accent: #fff;
     }
+
     html { transition: background 0.35s; }
+
     body {
-      min-height: 100vh; background: var(--bg); color: var(--text);
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
       -webkit-font-smoothing: antialiased;
       display: flex; flex-direction: column; align-items: center;
-      padding: 72px 20px 80px; transition: background 0.35s, color 0.35s; position: relative;
+      padding: 72px 20px 80px;
+      transition: background 0.35s, color 0.35s;
+      position: relative;
     }
+
     body::before {
-      content: ''; position: fixed; inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 20% 0%, rgba(160,130,255,0.08) 0%, transparent 60%),
-                  radial-gradient(ellipse 60% 50% at 80% 100%, rgba(100,180,255,0.07) 0%, transparent 60%);
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(160,130,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 100%, rgba(100,180,255,0.07) 0%, transparent 60%);
       pointer-events: none; z-index: 0;
     }
+
+    /* Language switcher */
     .lang-sw {
-      position: fixed; top: 20px; left: 20px; z-index: 100;
-      display: flex; background: var(--glass);
+      position: fixed;
+      top: 20px; left: 20px; z-index: 100;
+      display: flex;
+      background: var(--glass);
       backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-      border: 1px solid var(--glass-b); border-radius: 100px;
-      padding: 4px; gap: 2px; box-shadow: var(--shadow);
+      border: 1px solid var(--glass-b);
+      border-radius: 100px;
+      padding: 4px; gap: 2px;
+      box-shadow: var(--shadow);
       transition: background 0.35s, border-color 0.35s;
     }
     .lang-btn {
       background: none; border: none; border-radius: 100px;
       font-family: inherit; font-size: 11px; font-weight: 700;
       color: var(--text2); letter-spacing: 0.05em;
-      padding: 5px 10px; cursor: pointer; transition: background 0.15s, color 0.15s;
+      padding: 5px 10px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
     }
     .lang-btn.on { background: var(--accent); color: var(--bg); }
     .lang-btn:not(.on):hover { color: var(--text); }
+
+    /* Dark mode toggle */
     .theme-btn {
       position: fixed; top: 20px; right: 20px; z-index: 100;
       width: 40px; height: 40px; border-radius: 50%;
-      background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      background: var(--glass);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
       border: 1px solid var(--glass-b); box-shadow: var(--shadow);
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       font-size: 17px; transition: transform 0.2s, background 0.35s;
     }
     .theme-btn:hover { transform: scale(1.1); }
     .theme-btn:active { transform: scale(0.93); }
+
+    /* Content */
     .wrap {
-      position: relative; z-index: 1; width: 100%; max-width: 640px;
+      position: relative; z-index: 1;
+      width: 100%; max-width: 640px;
       display: flex; flex-direction: column; align-items: center;
     }
+
+    /* Badge */
     .badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      background: var(--glass);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
       border: 1px solid var(--glass-b); border-radius: 100px;
       padding: 6px 14px; font-size: 12px; font-weight: 600;
       color: var(--text2); letter-spacing: 0.04em; text-transform: uppercase;
@@ -79,6 +121,8 @@
       transition: background 0.35s, border-color 0.35s, color 0.35s;
     }
     .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #34c759; box-shadow: 0 0 6px #34c75966; }
+
+    /* Hero */
     h1 {
       font-size: clamp(32px, 6.5vw, 58px); font-weight: 700;
       letter-spacing: -0.04em; line-height: 1.08;
@@ -89,11 +133,14 @@
       background: linear-gradient(135deg, #7b5cfa 0%, #3b82f6 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
+
     .subtitle {
       font-size: 16px; color: var(--text2); text-align: center;
       letter-spacing: -0.01em; line-height: 1.5;
       margin-bottom: 40px; max-width: 440px; transition: color 0.35s;
     }
+
+    /* Card */
     .card {
       width: 100%; background: var(--glass);
       backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
@@ -101,11 +148,14 @@
       box-shadow: var(--shadow-lg);
       transition: background 0.35s, border-color 0.35s, box-shadow 0.35s;
     }
+
     .flabel {
       display: block; font-size: 11px; font-weight: 700;
       color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase;
       margin-bottom: 8px; transition: color 0.35s;
     }
+
+    /* URL row */
     .url-row {
       display: flex; gap: 8px; align-items: center;
       background: var(--ibg); border: 1px solid var(--sep);
@@ -114,12 +164,14 @@
     }
     .url-row:focus-within { border-color: rgba(123,92,250,0.4); box-shadow: 0 0 0 4px rgba(123,92,250,0.1); }
     .url-icon { color: var(--text3); flex-shrink: 0; transition: color 0.35s; }
+
     input[type="url"] {
       flex: 1; min-width: 0; background: none; border: none; outline: none;
       color: var(--text); font-family: inherit; font-size: 15px;
       letter-spacing: -0.01em; transition: color 0.35s;
     }
     input[type="url"]::placeholder { color: var(--text3); }
+
     .gen-btn {
       flex-shrink: 0; background: var(--accent); color: var(--bg);
       border: none; border-radius: 10px;
@@ -129,7 +181,10 @@
     }
     .gen-btn:hover { opacity: 0.75; }
     .gen-btn:active { transform: scale(0.95); }
+
+    /* Options grid */
     .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
     select {
       width: 100%; background: var(--ibg); border: 1px solid var(--sep);
       border-radius: 10px; color: var(--text);
@@ -142,6 +197,8 @@
     }
     select:focus { border-color: rgba(123,92,250,0.4); }
     select option { background: var(--bg); }
+
+    /* Segmented control */
     .seg {
       display: flex; background: var(--seg);
       border-radius: 10px; padding: 3px; gap: 2px; transition: background 0.35s;
@@ -154,6 +211,8 @@
     }
     .seg-btn.on { background: var(--seg-a); color: var(--text); box-shadow: var(--seg-shadow); }
     .seg-btn:not(.on):hover { color: var(--text); }
+
+    /* Color pickers */
     .color-row {
       display: flex; align-items: center; gap: 10px;
       background: var(--ibg); border: 1px solid var(--sep);
@@ -171,9 +230,13 @@
       border: none; padding: 0; opacity: 0; cursor: pointer;
     }
     .hex { font-size: 13px; font-weight: 500; color: var(--text2); letter-spacing: 0.02em; transition: color 0.35s; }
+
+    /* Output */
     .output { display: none; flex-direction: column; align-items: center; gap: 20px; padding-top: 24px; }
     .output.on { display: flex; }
+
     .divider { height: 1px; background: var(--sep); width: 100%; transition: background 0.35s; }
+
     .qr-wrap {
       background: #fff; border-radius: 20px; padding: 20px;
       box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.08);
@@ -181,14 +244,19 @@
     }
     @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     #qrcode canvas, #qrcode img { display: block; }
+
     .qr-url {
       font-size: 12px; color: var(--text3); text-align: center;
       word-break: break-all; max-width: 360px; line-height: 1.5; transition: color 0.35s;
     }
+
+    /* Action buttons */
     .acts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
     .act {
       display: inline-flex; align-items: center; gap: 6px;
-      background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      background: var(--glass);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
       border: 1px solid var(--glass-b); border-radius: 100px;
       color: var(--text); cursor: pointer;
       font-family: inherit; font-size: 13px; font-weight: 600;
@@ -199,9 +267,12 @@
     .act:active { transform: scale(0.97); }
     .act.primary { background: var(--accent); color: var(--bg); border-color: transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
     .act.primary:hover { opacity: 0.82; }
+
+    /* History */
     .hist-card {
       display: none; width: 100%;
-      background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      background: var(--glass);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
       border: 1px solid var(--glass-b); border-radius: 20px; padding: 18px 20px;
       box-shadow: var(--shadow-lg); margin-top: 16px;
       transition: background 0.35s, border-color 0.35s;
@@ -218,7 +289,26 @@
     .hist-time { font-size: 11px; color: var(--text3); margin-top: 1px; transition: color 0.35s; }
     .hist-dl { width: 28px; height: 28px; border-radius: 50%; background: var(--ibg); border: 1px solid var(--sep); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text2); cursor: pointer; transition: background 0.15s; }
     .hist-dl:hover { background: var(--seg); }
+
+    /* Brand */
+    .brand {
+      display: inline-flex; align-items: center; gap: 9px;
+      margin-bottom: 24px; margin-top: 8px;
+    }
+    .brand-ico { display: block; flex-shrink: 0; }
+    .brand-name {
+      font-size: 22px; font-weight: 800; letter-spacing: -0.04em;
+      color: var(--text); transition: color 0.35s;
+    }
+    .brand-name .bqr {
+      background: linear-gradient(135deg, #7b5cfa 0%, #3b82f6 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* Footer */
     footer { margin-top: 32px; font-size: 12px; color: var(--text3); text-align: center; letter-spacing: -0.01em; z-index: 1; transition: color 0.35s; }
+
+    /* Toast */
     .toast {
       position: fixed; bottom: 32px; left: 50%;
       transform: translateX(-50%) translateY(16px);
@@ -233,16 +323,40 @@
 </head>
 <body>
 
+<!-- Language switcher -->
 <div class="lang-sw">
   <button class="lang-btn on" data-lang="uz" onclick="setLang('uz')">UZB</button>
   <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
   <button class="lang-btn" data-lang="en" onclick="setLang('en')">ENG</button>
 </div>
 
+<!-- Dark mode toggle -->
 <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
 
 <div class="wrap">
+  <div class="brand">
+    <svg class="brand-ico" width="30" height="30" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="brand-grad" x1="0" y1="0" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#7b5cfa"/>
+          <stop offset="100%" stop-color="#3b82f6"/>
+        </linearGradient>
+      </defs>
+      <rect x="1" y="1" width="7" height="7" rx="1.8" fill="none" stroke="url(#brand-grad)" stroke-width="1.4"/>
+      <rect x="3" y="3" width="3" height="3" rx="0.8" fill="url(#brand-grad)"/>
+      <rect x="12" y="1" width="7" height="7" rx="1.8" fill="none" stroke="url(#brand-grad)" stroke-width="1.4"/>
+      <rect x="14" y="3" width="3" height="3" rx="0.8" fill="url(#brand-grad)"/>
+      <rect x="1" y="12" width="7" height="7" rx="1.8" fill="none" stroke="url(#brand-grad)" stroke-width="1.4"/>
+      <rect x="3" y="14" width="3" height="3" rx="0.8" fill="url(#brand-grad)"/>
+      <rect x="12" y="12" width="2.5" height="2.5" rx="0.6" fill="url(#brand-grad)"/>
+      <rect x="15.5" y="12" width="2.5" height="2.5" rx="0.6" fill="url(#brand-grad)" opacity="0.6"/>
+      <rect x="12" y="15.5" width="2.5" height="2.5" rx="0.6" fill="url(#brand-grad)" opacity="0.6"/>
+      <rect x="15.5" y="15.5" width="2.5" height="2.5" rx="0.6" fill="url(#brand-grad)"/>
+    </svg>
+    <span class="brand-name"><span class="bqr">QR</span>tez</span>
+  </div>
   <div class="badge"><div class="badge-dot"></div><span id="t-badge"></span></div>
+
   <h1 id="t-h1"></h1>
   <p class="subtitle" id="t-subtitle"></p>
 
@@ -250,17 +364,21 @@
     <span class="flabel" id="t-url-label"></span>
     <div class="url-row">
       <svg class="url-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
       </svg>
       <input type="url" id="url-input" autocomplete="off" spellcheck="false" />
       <button class="gen-btn" id="t-gen-btn" onclick="generate(false)"></button>
     </div>
+
     <div class="opts">
       <div>
         <span class="flabel" id="t-preview-size"></span>
         <select id="size-select" onchange="regen()">
-          <option value="128">128 × 128</option><option value="200">200 × 200</option>
-          <option value="256" selected>256 × 256</option><option value="400">400 × 400</option>
+          <option value="128">128 × 128</option>
+          <option value="200">200 × 200</option>
+          <option value="256" selected>256 × 256</option>
+          <option value="400">400 × 400</option>
           <option value="512">512 × 512</option>
         </select>
       </div>
@@ -284,18 +402,23 @@
       <div>
         <span class="flabel" id="t-fg-label"></span>
         <div class="color-row">
-          <div class="swatch" id="fg-sw" style="background:#000"><input type="color" id="fg" value="#000000" oninput="onColor()" /></div>
+          <div class="swatch" id="fg-sw" style="background:#000">
+            <input type="color" id="fg" value="#000000" oninput="onColor()" />
+          </div>
           <span class="hex" id="fg-lbl">#000000</span>
         </div>
       </div>
       <div>
         <span class="flabel" id="t-bg-label"></span>
         <div class="color-row">
-          <div class="swatch" id="bg-sw" style="background:#fff;border-color:rgba(0,0,0,0.1)"><input type="color" id="bg" value="#ffffff" oninput="onColor()" /></div>
+          <div class="swatch" id="bg-sw" style="background:#fff; border-color:rgba(0,0,0,0.1)">
+            <input type="color" id="bg" value="#ffffff" oninput="onColor()" />
+          </div>
           <span class="hex" id="bg-lbl">#ffffff</span>
         </div>
       </div>
     </div>
+
     <div class="output" id="output">
       <div class="divider"></div>
       <div class="qr-wrap"><div id="qrcode"></div></div>
@@ -330,50 +453,95 @@
 <script>
   const LANGS = {
     uz: {
-      html_lang:'uz', badge:"Bepul va Tezkor",
-      h1:'Har qanday havola uchun<br><span class="accent">QR Kod yarating</span>',
-      subtitle:"URL manzilingizni kiriting, sozlang, yuklab oling — ro'yxatdan o'tishsiz.",
-      url_label:"Manzilingiz", placeholder:"https://misol.com", generate:"Yaratish",
-      preview_size:"Ko'rinish o'lchami", ec_label:"Xato tuzatish", quality_label:"Eksport sifati",
-      fg_label:"Oldingi fon", bg_label:"Orqa fon",
-      dl_png:"PNG yuklab olish", transparent:"Shaffof", copy_link:"Havolani nusxalash",
-      recent:"So'nggi", footer:"Ma'lumotlar saqlanmaydi &nbsp;·&nbsp; Hamma narsa brauzeringizda ishlaydi",
-      toast_url:"https:// ni qo'shing", toast_copied:"Havola nusxalandi", toast_dl:"Yuklab olindi",
-      ago_now:"hozir", ago_m:" daqiqa oldin", ago_h:" soat oldin", ago_d:" kun oldin",
+      html_lang: 'uz',
+      badge: "Bepul va Tezkor",
+      h1: 'Har qanday havola uchun<br><span class="accent">QR Kod yarating</span>',
+      subtitle: "URL manzilingizni kiriting, sozlang, yuklab oling — ro'yxatdan o'tishsiz.",
+      url_label: "Manzilingiz",
+      placeholder: "https://misol.com",
+      generate: "Yaratish",
+      preview_size: "Ko'rinish o'lchami",
+      ec_label: "Xato tuzatish",
+      quality_label: "Eksport sifati",
+      fg_label: "Oldingi fon",
+      bg_label: "Orqa fon",
+      dl_png: "PNG yuklab olish",
+      transparent: "Shaffof",
+      copy_link: "Havolani nusxalash",
+      recent: "So'nggi",
+      footer: "Ma'lumotlar saqlanmaydi &nbsp;·&nbsp; Hamma narsa brauzeringizda ishlaydi",
+      toast_url: "https:// ni qo'shing",
+      toast_copied: "Havola nusxalandi",
+      toast_dl: "Yuklab olindi",
+      ago_now: "hozir",
+      ago_m: " daqiqa oldin",
+      ago_h: " soat oldin",
+      ago_d: " kun oldin",
     },
     ru: {
-      html_lang:'ru', badge:"Бесплатно и быстро",
-      h1:'Создайте QR-код<br>для <span class="accent">любой ссылки</span>',
-      subtitle:"Вставьте URL, настройте, скачайте — без регистрации.",
-      url_label:"Ваш URL", placeholder:"https://example.com", generate:"Создать",
-      preview_size:"Размер превью", ec_label:"Коррекция ошибок", quality_label:"Качество экспорта",
-      fg_label:"Передний план", bg_label:"Задний фон",
-      dl_png:"Скачать PNG", transparent:"Прозрачный", copy_link:"Копировать ссылку",
-      recent:"Недавние", footer:"Данные не хранятся &nbsp;·&nbsp; Всё работает в браузере",
-      toast_url:"Добавьте https://", toast_copied:"Ссылка скопирована", toast_dl:"Скачано",
-      ago_now:"только что", ago_m:" мин назад", ago_h:" ч назад", ago_d:" дн назад",
+      html_lang: 'ru',
+      badge: "Бесплатно и быстро",
+      h1: 'Создайте QR-код<br>для <span class="accent">любой ссылки</span>',
+      subtitle: "Вставьте URL, настройте, скачайте — без регистрации.",
+      url_label: "Ваш URL",
+      placeholder: "https://example.com",
+      generate: "Создать",
+      preview_size: "Размер превью",
+      ec_label: "Коррекция ошибок",
+      quality_label: "Качество экспорта",
+      fg_label: "Передний план",
+      bg_label: "Задний фон",
+      dl_png: "Скачать PNG",
+      transparent: "Прозрачный",
+      copy_link: "Копировать ссылку",
+      recent: "Недавние",
+      footer: "Данные не хранятся &nbsp;·&nbsp; Всё работает в браузере",
+      toast_url: "Добавьте https://",
+      toast_copied: "Ссылка скопирована",
+      toast_dl: "Скачано",
+      ago_now: "только что",
+      ago_m: " мин назад",
+      ago_h: " ч назад",
+      ago_d: " дн назад",
     },
     en: {
-      html_lang:'en', badge:"Free & Instant",
-      h1:'Generate a QR Code<br>for <span class="accent">any link</span>',
-      subtitle:"Paste your URL, customize, download — no sign-up.",
-      url_label:"Your URL", placeholder:"https://example.com", generate:"Generate",
-      preview_size:"Preview Size", ec_label:"Error Correction", quality_label:"Export Quality",
-      fg_label:"Foreground", bg_label:"Background",
-      dl_png:"Download PNG", transparent:"Transparent", copy_link:"Copy Link",
-      recent:"Recent", footer:"No data is stored &nbsp;·&nbsp; Everything runs in your browser",
-      toast_url:"Please include https://", toast_copied:"Link copied", toast_dl:"Downloaded",
-      ago_now:"just now", ago_m:"m ago", ago_h:"h ago", ago_d:"d ago",
+      html_lang: 'en',
+      badge: "Free & Instant",
+      h1: 'Generate a QR Code<br>for <span class="accent">any link</span>',
+      subtitle: "Paste your URL, customize, download — no sign-up.",
+      url_label: "Your URL",
+      placeholder: "https://example.com",
+      generate: "Generate",
+      preview_size: "Preview Size",
+      ec_label: "Error Correction",
+      quality_label: "Export Quality",
+      fg_label: "Foreground",
+      bg_label: "Background",
+      dl_png: "Download PNG",
+      transparent: "Transparent",
+      copy_link: "Copy Link",
+      recent: "Recent",
+      footer: "No data is stored &nbsp;·&nbsp; Everything runs in your browser",
+      toast_url: "Please include https://",
+      toast_copied: "Link copied",
+      toast_dl: "Downloaded",
+      ago_now: "just now",
+      ago_m: "m ago",
+      ago_h: "h ago",
+      ago_d: "d ago",
     }
   };
 
   let lang = localStorage.getItem('qr-lang') || 'uz';
 
   function setLang(l) {
-    lang = l; localStorage.setItem('qr-lang', l);
+    lang = l;
+    localStorage.setItem('qr-lang', l);
     const t = LANGS[l];
     document.documentElement.lang = t.html_lang;
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('on', b.dataset.lang === l)
+    );
     document.getElementById('t-badge').textContent = t.badge;
     document.getElementById('t-h1').innerHTML = t.h1;
     document.getElementById('t-subtitle').textContent = t.subtitle;
@@ -393,61 +561,159 @@
     renderHist();
   }
 
-  const fgEl=document.getElementById('fg'), bgEl=document.getElementById('bg');
-  let ec='M', lastUrl='', timer=null, hist=[];
-  try { hist=JSON.parse(localStorage.getItem('qr-hist')||'[]'); } catch(e) {}
+  const fgEl = document.getElementById('fg');
+  const bgEl = document.getElementById('bg');
+  let ec = 'M', lastUrl = '', timer = null;
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem('qr-hist') || '[]'); } catch(e) {}
 
-  const th=localStorage.getItem('qr-theme')||'light';
-  document.documentElement.setAttribute('data-theme',th); syncThemeBtn(th);
+  const th = localStorage.getItem('qr-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', th);
+  syncThemeBtn(th);
 
-  function toggleTheme(){const d=document.documentElement.getAttribute('data-theme')==='dark';const n=d?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('qr-theme',n);syncThemeBtn(n);}
-  function syncThemeBtn(t){document.getElementById('theme-btn').textContent=t==='dark'?'☀️':'🌙';}
-  function setEC(btn){document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');ec=btn.dataset.v;regen();}
-  function onColor(){document.getElementById('fg-sw').style.background=fgEl.value;document.getElementById('fg-lbl').textContent=fgEl.value;document.getElementById('bg-sw').style.background=bgEl.value;document.getElementById('bg-lbl').textContent=bgEl.value;regen();}
-
-  const urlInput=document.getElementById('url-input');
-  urlInput.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>generate(true),500);});
-  urlInput.addEventListener('keydown',e=>{if(e.key==='Enter'){clearTimeout(timer);generate(false);}});
-
-  function generate(silent){
-    const url=urlInput.value.trim(); if(!url)return;
-    try{new URL(url);}catch{if(!silent)showToast(LANGS[lang].toast_url);return;}
-    const size=parseInt(document.getElementById('size-select').value);
-    const box=document.getElementById('qrcode'); box.innerHTML='';
-    new QRCode(box,{text:url,width:size,height:size,colorDark:fgEl.value,colorLight:bgEl.value,correctLevel:QRCode.CorrectLevel[ec]});
-    lastUrl=url; document.getElementById('qr-lbl').textContent=url;
-    const out=document.getElementById('output');
-    if(!out.classList.contains('on')){out.classList.add('on');out.scrollIntoView({behavior:'smooth',block:'nearest'});}
-    setTimeout(()=>addHist(url),100);
+  function toggleTheme() {
+    const d = document.documentElement.getAttribute('data-theme') === 'dark';
+    const n = d ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', n);
+    localStorage.setItem('qr-theme', n);
+    syncThemeBtn(n);
   }
-  function regen(){if(lastUrl)generate(true);}
-
-  function dlPNG(transparent){
-    const src=document.querySelector('#qrcode canvas'); if(!src)return;
-    const q=parseInt(document.getElementById('quality-select').value);
-    const c=document.createElement('canvas'); c.width=q; c.height=q;
-    const ctx=c.getContext('2d');
-    if(!transparent){ctx.fillStyle=bgEl.value;ctx.fillRect(0,0,q,q);}
-    ctx.imageSmoothingEnabled=false; ctx.drawImage(src,0,0,q,q);
-    if(transparent){const h=bgEl.value;const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);const d=ctx.getImageData(0,0,q,q);const px=d.data;for(let i=0;i<px.length;i+=4){if(Math.abs(px[i]-r)<30&&Math.abs(px[i+1]-g)<30&&Math.abs(px[i+2]-b)<30)px[i+3]=0;}ctx.putImageData(d,0,0);}
-    const a=document.createElement('a'); a.download=(transparent?'qrcode-transparent':'qrcode')+'-'+q+'p.png'; a.href=c.toDataURL('image/png'); a.click();
-    showToast(transparent?LANGS[lang].transparent+' PNG':q+'p PNG');
+  function syncThemeBtn(t) {
+    document.getElementById('theme-btn').textContent = t === 'dark' ? '☀️' : '🌙';
   }
-  function copyLink(){if(!lastUrl)return;navigator.clipboard.writeText(lastUrl).then(()=>showToast(LANGS[lang].toast_copied));}
 
-  function addHist(url){const canvas=document.querySelector('#qrcode canvas');if(!canvas)return;const dataUrl=canvas.toDataURL('image/png');hist=hist.filter(h=>h.url!==url);hist.unshift({url,dataUrl,t:Date.now()});if(hist.length>5)hist=hist.slice(0,5);try{localStorage.setItem('qr-hist',JSON.stringify(hist));}catch(e){}renderHist();}
+  function setEC(btn) {
+    document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    ec = btn.dataset.v;
+    regen();
+  }
 
-  function renderHist(){
-    const card=document.getElementById('hist-card'),list=document.getElementById('hist-list');
-    if(!hist.length){card.classList.remove('on');return;}
+  function onColor() {
+    document.getElementById('fg-sw').style.background = fgEl.value;
+    document.getElementById('fg-lbl').textContent = fgEl.value;
+    document.getElementById('bg-sw').style.background = bgEl.value;
+    document.getElementById('bg-lbl').textContent = bgEl.value;
+    regen();
+  }
+
+  const urlInput = document.getElementById('url-input');
+  urlInput.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => generate(true), 500);
+  });
+  urlInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { clearTimeout(timer); generate(false); }
+  });
+
+  function generate(silent) {
+    const url = urlInput.value.trim();
+    if (!url) return;
+    try { new URL(url); } catch {
+      if (!silent) showToast(LANGS[lang].toast_url);
+      return;
+    }
+    const size = parseInt(document.getElementById('size-select').value);
+    const box = document.getElementById('qrcode');
+    box.innerHTML = '';
+    new QRCode(box, {
+      text: url, width: size, height: size,
+      colorDark: fgEl.value, colorLight: bgEl.value,
+      correctLevel: QRCode.CorrectLevel[ec],
+    });
+    lastUrl = url;
+    document.getElementById('qr-lbl').textContent = url;
+    const out = document.getElementById('output');
+    if (!out.classList.contains('on')) {
+      out.classList.add('on');
+      out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    setTimeout(() => addHist(url), 100);
+  }
+
+  function regen() { if (lastUrl) generate(true); }
+
+  function dlPNG(transparent) {
+    const src = document.querySelector('#qrcode canvas');
+    if (!src) return;
+    const q = parseInt(document.getElementById('quality-select').value);
+    const c = document.createElement('canvas');
+    c.width = q; c.height = q;
+    const ctx = c.getContext('2d');
+    if (!transparent) { ctx.fillStyle = bgEl.value; ctx.fillRect(0, 0, q, q); }
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(src, 0, 0, q, q);
+    if (transparent) {
+      const h = bgEl.value;
+      const r = parseInt(h.slice(1,3),16), g = parseInt(h.slice(3,5),16), b = parseInt(h.slice(5,7),16);
+      const d = ctx.getImageData(0,0,q,q); const px = d.data;
+      for (let i = 0; i < px.length; i += 4) {
+        if (Math.abs(px[i]-r)<30 && Math.abs(px[i+1]-g)<30 && Math.abs(px[i+2]-b)<30) px[i+3] = 0;
+      }
+      ctx.putImageData(d, 0, 0);
+    }
+    const a = document.createElement('a');
+    a.download = (transparent ? 'qrcode-transparent' : 'qrcode') + '-' + q + 'p.png';
+    a.href = c.toDataURL('image/png'); a.click();
+    showToast(transparent ? LANGS[lang].transparent + ' PNG' : q + 'p PNG');
+  }
+
+  function copyLink() {
+    if (!lastUrl) return;
+    navigator.clipboard.writeText(lastUrl).then(() => showToast(LANGS[lang].toast_copied));
+  }
+
+  function addHist(url) {
+    const canvas = document.querySelector('#qrcode canvas');
+    if (!canvas) return;
+    const dataUrl = canvas.toDataURL('image/png');
+    hist = hist.filter(h => h.url !== url);
+    hist.unshift({ url, dataUrl, t: Date.now() });
+    if (hist.length > 5) hist = hist.slice(0, 5);
+    try { localStorage.setItem('qr-hist', JSON.stringify(hist)); } catch(e) {}
+    renderHist();
+  }
+
+  function renderHist() {
+    const card = document.getElementById('hist-card');
+    const list = document.getElementById('hist-list');
+    if (!hist.length) { card.classList.remove('on'); return; }
     card.classList.add('on');
-    list.innerHTML=hist.map((h,i)=>`<div class="hist-item" onclick="loadHist(${i})"><div class="hist-thumb"><img src="${h.dataUrl}" alt=""/></div><div class="hist-info"><div class="hist-url">${h.url}</div><div class="hist-time">${ago(h.t)}</div></div><div class="hist-dl" onclick="event.stopPropagation();dlHist(${i})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div></div>`).join('');
+    list.innerHTML = hist.map((h, i) => `
+      <div class="hist-item" onclick="loadHist(${i})">
+        <div class="hist-thumb"><img src="${h.dataUrl}" alt="" /></div>
+        <div class="hist-info">
+          <div class="hist-url">${h.url}</div>
+          <div class="hist-time">${ago(h.t)}</div>
+        </div>
+        <div class="hist-dl" onclick="event.stopPropagation();dlHist(${i})" title="${LANGS[lang].dl_png}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+      </div>`).join('');
   }
-  function loadHist(i){urlInput.value=hist[i].url;generate(false);}
-  function dlHist(i){const a=document.createElement('a');a.download='qrcode.png';a.href=hist[i].dataUrl;a.click();showToast(LANGS[lang].toast_dl);}
 
-  function ago(ts){const t=LANGS[lang];const s=Math.floor((Date.now()-ts)/1000);if(s<60)return t.ago_now;if(s<3600)return Math.floor(s/60)+t.ago_m;if(s<86400)return Math.floor(s/3600)+t.ago_h;return Math.floor(s/86400)+t.ago_d;}
-  function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}
+  function loadHist(i) { urlInput.value = hist[i].url; generate(false); }
+
+  function dlHist(i) {
+    const a = document.createElement('a');
+    a.download = 'qrcode.png'; a.href = hist[i].dataUrl; a.click();
+    showToast(LANGS[lang].toast_dl);
+  }
+
+  function ago(ts) {
+    const t = LANGS[lang];
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60) return t.ago_now;
+    if (s < 3600) return Math.floor(s/60) + t.ago_m;
+    if (s < 86400) return Math.floor(s/3600) + t.ago_h;
+    return Math.floor(s/86400) + t.ago_d;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('on');
+    setTimeout(() => t.classList.remove('on'), 2200);
+  }
 
   setLang(lang);
   renderHist();
