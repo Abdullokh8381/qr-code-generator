@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QRtez — QR Kod Generator</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237b5cfa'/%3E%3Crect x='3' y='3' width='11' height='11' rx='2.5' fill='none' stroke='white' stroke-width='1.8'/%3E%3Crect x='6' y='6' width='5' height='5' rx='1.2' fill='white'/%3E%3Crect x='18' y='3' width='11' height='11' rx='2.5' fill='none' stroke='white' stroke-width='1.8'/%3E%3Crect x='21' y='6' width='5' height='5' rx='1.2' fill='white'/%3E%3Crect x='3' y='18' width='11' height='11' rx='2.5' fill='none' stroke='white' stroke-width='1.8'/%3E%3Crect x='6' y='21' width='5' height='5' rx='1.2' fill='white'/%3E%3Crect x='18' y='18' width='4.5' height='4.5' rx='1' fill='white'/%3E%3Crect x='24' y='18' width='4.5' height='4.5' rx='1' fill='white' opacity='.65'/%3E%3Crect x='18' y='24' width='4.5' height='4.5' rx='1' fill='white' opacity='.65'/%3E%3Crect x='24' y='24' width='4.5' height='4.5' rx='1' fill='white'/%3E%3C/svg%3E">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -66,7 +67,7 @@
       pointer-events: none; z-index: 0;
     }
 
-    /* Language switcher */
+    /* ── Language switcher ── */
     .lang-sw {
       position: fixed;
       top: 20px; left: 20px; z-index: 100;
@@ -89,7 +90,7 @@
     .lang-btn.on { background: var(--accent); color: var(--bg); }
     .lang-btn:not(.on):hover { color: var(--text); }
 
-    /* Dark mode toggle */
+    /* ── Dark mode toggle ── */
     .theme-btn {
       position: fixed; top: 20px; right: 20px; z-index: 100;
       width: 40px; height: 40px; border-radius: 50%;
@@ -102,14 +103,14 @@
     .theme-btn:hover { transform: scale(1.1); }
     .theme-btn:active { transform: scale(0.93); }
 
-    /* Content */
+    /* ── Content ── */
     .wrap {
       position: relative; z-index: 1;
       width: 100%; max-width: 640px;
       display: flex; flex-direction: column; align-items: center;
     }
 
-    /* Badge */
+    /* ── Badge ── */
     .badge {
       display: inline-flex; align-items: center; gap: 6px;
       background: var(--glass);
@@ -122,7 +123,7 @@
     }
     .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #34c759; box-shadow: 0 0 6px #34c75966; }
 
-    /* Hero */
+    /* ── Hero ── */
     h1 {
       font-size: clamp(32px, 6.5vw, 58px); font-weight: 700;
       letter-spacing: -0.04em; line-height: 1.08;
@@ -140,7 +141,7 @@
       margin-bottom: 40px; max-width: 440px; transition: color 0.35s;
     }
 
-    /* Card */
+    /* ── Card ── */
     .card {
       width: 100%; background: var(--glass);
       backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
@@ -155,7 +156,7 @@
       margin-bottom: 8px; transition: color 0.35s;
     }
 
-    /* URL row */
+    /* ── URL row ── */
     .url-row {
       display: flex; gap: 8px; align-items: center;
       background: var(--ibg); border: 1px solid var(--sep);
@@ -182,7 +183,7 @@
     .gen-btn:hover { opacity: 0.75; }
     .gen-btn:active { transform: scale(0.95); }
 
-    /* Options grid */
+    /* ── Options grid ── */
     .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
     select {
@@ -198,7 +199,7 @@
     select:focus { border-color: rgba(123,92,250,0.4); }
     select option { background: var(--bg); }
 
-    /* Segmented control */
+    /* ── Segmented control ── */
     .seg {
       display: flex; background: var(--seg);
       border-radius: 10px; padding: 3px; gap: 2px; transition: background 0.35s;
@@ -212,7 +213,7 @@
     .seg-btn.on { background: var(--seg-a); color: var(--text); box-shadow: var(--seg-shadow); }
     .seg-btn:not(.on):hover { color: var(--text); }
 
-    /* Color pickers */
+    /* ── Color pickers ── */
     .color-row {
       display: flex; align-items: center; gap: 10px;
       background: var(--ibg); border: 1px solid var(--sep);
@@ -231,7 +232,7 @@
     }
     .hex { font-size: 13px; font-weight: 500; color: var(--text2); letter-spacing: 0.02em; transition: color 0.35s; }
 
-    /* Output */
+    /* ── Output ── */
     .output { display: none; flex-direction: column; align-items: center; gap: 20px; padding-top: 24px; }
     .output.on { display: flex; }
 
@@ -250,7 +251,7 @@
       word-break: break-all; max-width: 360px; line-height: 1.5; transition: color 0.35s;
     }
 
-    /* Action buttons */
+    /* ── Action buttons ── */
     .acts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 
     .act {
@@ -268,7 +269,7 @@
     .act.primary { background: var(--accent); color: var(--bg); border-color: transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
     .act.primary:hover { opacity: 0.82; }
 
-    /* History */
+    /* ── History ── */
     .hist-card {
       display: none; width: 100%;
       background: var(--glass);
@@ -290,7 +291,7 @@
     .hist-dl { width: 28px; height: 28px; border-radius: 50%; background: var(--ibg); border: 1px solid var(--sep); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text2); cursor: pointer; transition: background 0.15s; }
     .hist-dl:hover { background: var(--seg); }
 
-    /* Brand */
+    /* ── Brand ── */
     .brand {
       display: inline-flex; align-items: center; gap: 9px;
       margin-bottom: 24px; margin-top: 8px;
@@ -305,10 +306,10 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
-    /* Footer */
+    /* ── Footer ── */
     footer { margin-top: 32px; font-size: 12px; color: var(--text3); text-align: center; letter-spacing: -0.01em; z-index: 1; transition: color 0.35s; }
 
-    /* Toast */
+    /* ── Toast ── */
     .toast {
       position: fixed; bottom: 32px; left: 50%;
       transform: translateX(-50%) translateY(16px);
@@ -342,12 +343,16 @@
           <stop offset="100%" stop-color="#3b82f6"/>
         </linearGradient>
       </defs>
+      <!-- top-left finder -->
       <rect x="1" y="1" width="7" height="7" rx="1.8" fill="none" stroke="url(#brand-grad)" stroke-width="1.4"/>
       <rect x="3" y="3" width="3" height="3" rx="0.8" fill="url(#brand-grad)"/>
+      <!-- top-right finder -->
       <rect x="12" y="1" width="7" height="7" rx="1.8" fill="none" stroke="url(#brand-grad)" stroke-width="1.4"/>
       <rect x="14" y="3" width="3" height="3" rx="0.8" fill="url(#brand-grad)"/>
+      <!-- bottom-left finder -->
       <rect x="1" y="12" width="7" height="7" rx="1.8" fill="none" stroke="url(#brand-grad)" stroke-width="1.4"/>
       <rect x="3" y="14" width="3" height="3" rx="0.8" fill="url(#brand-grad)"/>
+      <!-- data dots -->
       <rect x="12" y="12" width="2.5" height="2.5" rx="0.6" fill="url(#brand-grad)"/>
       <rect x="15.5" y="12" width="2.5" height="2.5" rx="0.6" fill="url(#brand-grad)" opacity="0.6"/>
       <rect x="12" y="15.5" width="2.5" height="2.5" rx="0.6" fill="url(#brand-grad)" opacity="0.6"/>
@@ -715,6 +720,7 @@
     setTimeout(() => t.classList.remove('on'), 2200);
   }
 
+  // ── Init ──
   setLang(lang);
   renderHist();
 </script>
